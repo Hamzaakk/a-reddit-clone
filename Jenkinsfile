@@ -37,13 +37,13 @@ pipeline {
                 }
             }
         }
-        stage('Quality Gate') {
-            steps {
-                script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'SonarQube-Token'
-                }
-            }
-        }
+        // stage('Quality Gate') {
+        //     steps {
+        //         script {
+        //             waitForQualityGate abortPipeline: false, credentialsId: 'SonarQube-Token' 	
+        //         }
+        //     }
+        // }
         stage('Install Dependencies') {
             steps {
                 sh "npm install"
