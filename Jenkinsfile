@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        jdk 'jdk11'  // Ensure this matches your JDK version
+        jdk 'jdk17'  // Ensure this matches your JDK version
         nodejs 'node16' 
     }
     environment {
