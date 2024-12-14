@@ -2,8 +2,7 @@ pipeline {
     agent any
     tools {
         jdk 'jdk11'  // Ensure this matches your JDK version
-        nodejs 'node16'
-        sonar-scanner 'sonar-scanner' 
+        nodejs 'node16' 
     }
     environment {
         // JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64'
