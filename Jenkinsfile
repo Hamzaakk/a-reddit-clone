@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        jdk 'jdk17'
+        jdk 'jdk17'  // Replace with your actual JDK if needed
         nodejs 'node16'
     }
     environment {
@@ -10,11 +10,10 @@ pipeline {
         SCANNER_HOME = tool 'sonar-scanner'
         APP_NAME = "reddit-clone-pipeline"
         RELEASE = "1.0.0"
-        DOCKER_USER = "hamzaakkaoui"
-        DOCKER_PASS = 'dockerhub'
+        DOCKER_USER = "your-dockerhub-username"
+        DOCKER_PASS = 'your-dockerhub-password'
         IMAGE_NAME = "${DOCKER_USER}/${APP_NAME}"
         IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
-        // JENKINS_API_TOKEN = credentials("JENKINS_API_TOKEN")
     }
     stages {
         stage('Clean Workspace') {
@@ -52,13 +51,8 @@ pipeline {
                 sh "npm install"
             }
         }
-        // Optional stages for scanning, building, and deploying Docker images
+        // Optional Docker stages
         /*
-        stage('TRIVY FS SCAN') {
-            steps {
-                sh "trivy fs . > trivyfs.txt"
-            }
-        }
         stage('Build & Push Docker Image') {
             steps {
                 script {
@@ -72,42 +66,17 @@ pipeline {
                 }
             }
         }
-        stage('Trivy Image Scan') {
-            steps {
-                script {
-                    sh ('docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${IMAGE_NAME}:latest --no-progress --scanners vuln --exit-code 0 --severity HIGH,CRITICAL --format table > trivyimage.txt')
-                }
-            }
-        }
-        stage('Cleanup Artifacts') {
-            steps {
-                script {
-                    sh "docker rmi ${IMAGE_NAME}:${IMAGE_TAG}"
-                    sh "docker rmi ${IMAGE_NAME}:latest"
-                }
-            }
-        }
-        stage('Trigger CD Pipeline') {
-            steps {
-                script {
-                    sh "curl -v -k --user clouduser:${JENKINS_API_TOKEN} -X POST -H 'cache-control: no-cache' -H 'content-type: application/x-www-form-urlencoded' --data 'IMAGE_TAG=${IMAGE_TAG}' 'http://ec2-65-2-187-142.ap-south-1.compute.amazonaws.com:8080/job/Reddit-Clone-CD/buildWithParameters?token=gitops-token'"
-                }
-            }
-        }
         */
     }
-    // Uncomment the post block for notifications
-    /*
-    post {
-        always {
-            emailext attachLog: true,
-                subject: "'${currentBuild.result}'",
-                body: "Project: ${env.JOB_NAME}<br/>" +
-                    "Build Number: ${env.BUILD_NUMBER}<br/>" +
-                    "URL: ${env.BUILD_URL}<br/>",
-                to: 'ashfaque.s510@gmail.com',
-                attachmentsPattern: 'trivyfs.txt,trivyimage.txt'
-        }
-    }
-    */
+    // post {
+    //     always {
+    //         emailext attachLog: true,
+    //             subject: "'${currentBuild.result}'",
+    //             body: "Project: ${env.JOB_NAME}<br/>" +
+    //                 "Build Number: ${env.BUILD_NUMBER}<br/>" +
+    //                 "URL: ${env.BUILD_URL}<br/>",
+    //             to: 'your-email@example.com',
+    //             attachmentsPattern: 'trivyfs.txt,trivyimage.txt'
+    //     }
+    // }
 }
