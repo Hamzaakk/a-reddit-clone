@@ -6,7 +6,7 @@ pipeline {
     }
     environment {
         JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64'
-        PATH = "${env.JAVA_HOME}/bin:${env.PATH}"
+        PATH = "${JAVA_HOME}/bin:${PATH}"
         SCANNER_HOME = tool 'sonar-scanner'
         APP_NAME = "reddit-clone-pipeline"
         RELEASE = "1.0.0"
@@ -30,13 +30,13 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube-Server') {
-                    withEnv(['JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64', 'PATH=/usr/lib/jvm/java-11-openjdk-amd64/bin:${env.PATH}']) {
-                        sh """
-                        /var/lib/jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonar-scanner/bin/sonar-scanner \
-                        -Dsonar.projectName=Redit-Clone-CI \
-                        -Dsonar.projectKey=Redit-Clone-CI
-                        """
-                    }
+                    sh """
+                    ${SCANNER_HOME}/bin/sonar-scanner \
+                      -Dsonar.projectKey=Redit-Clone-CI \
+                      -Dsonar.sources=. \
+                      -Dsonar.host.url=http://54.221.2.11:9000 \
+                      -Dsonar.token=sqp_dff50b61668588a4888770c37bac8535424ad12c
+                    """
                 }
             }
         }
@@ -52,56 +52,62 @@ pipeline {
                 sh "npm install"
             }
         }
-        // stage('TRIVY FS SCAN') {
-        //     steps {
-        //         sh "trivy fs . > trivyfs.txt"
-        //     }
-        // }
-        // stage('Build & Push Docker Image') {
-        //     steps {
-        //         script {
-        //             docker.withRegistry('', DOCKER_PASS) {
-        //                 docker_image = docker.build "${IMAGE_NAME}"
-        //             }
-        //             docker.withRegistry('', DOCKER_PASS) {
-        //                 docker_image.push("${IMAGE_TAG}")
-        //                 docker_image.push('latest')
-        //             }
-        //         }
-        //     }
-        // }
-        // stage('Trivy Image Scan') {
-        //     steps {
-        //         script {
-        //             sh ('docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${IMAGE_NAME}:latest --no-progress --scanners vuln --exit-code 0 --severity HIGH,CRITICAL --format table > trivyimage.txt')
-        //         }
-        //     }
-        // }
-        // stage('Cleanup Artifacts') {
-        //     steps {
-        //         script {
-        //             sh "docker rmi ${IMAGE_NAME}:${IMAGE_TAG}"
-        //             sh "docker rmi ${IMAGE_NAME}:latest"
-        //         }
-        //     }
-        // }
-        // stage('Trigger CD Pipeline') {
-        //     steps {
-        //         script {
-        //             sh "curl -v -k --user clouduser:${JENKINS_API_TOKEN} -X POST -H 'cache-control: no-cache' -H 'content-type: application/x-www-form-urlencoded' --data 'IMAGE_TAG=${IMAGE_TAG}' 'http://ec2-65-2-187-142.ap-south-1.compute.amazonaws.com:8080/job/Reddit-Clone-CD/buildWithParameters?token=gitops-token'"
-        //         }
-        //     }
-        // }
+        // Optional stages for scanning, building, and deploying Docker images
+        /*
+        stage('TRIVY FS SCAN') {
+            steps {
+                sh "trivy fs . > trivyfs.txt"
+            }
+        }
+        stage('Build & Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry('', DOCKER_PASS) {
+                        docker_image = docker.build "${IMAGE_NAME}"
+                    }
+                    docker.withRegistry('', DOCKER_PASS) {
+                        docker_image.push("${IMAGE_TAG}")
+                        docker_image.push('latest')
+                    }
+                }
+            }
+        }
+        stage('Trivy Image Scan') {
+            steps {
+                script {
+                    sh ('docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${IMAGE_NAME}:latest --no-progress --scanners vuln --exit-code 0 --severity HIGH,CRITICAL --format table > trivyimage.txt')
+                }
+            }
+        }
+        stage('Cleanup Artifacts') {
+            steps {
+                script {
+                    sh "docker rmi ${IMAGE_NAME}:${IMAGE_TAG}"
+                    sh "docker rmi ${IMAGE_NAME}:latest"
+                }
+            }
+        }
+        stage('Trigger CD Pipeline') {
+            steps {
+                script {
+                    sh "curl -v -k --user clouduser:${JENKINS_API_TOKEN} -X POST -H 'cache-control: no-cache' -H 'content-type: application/x-www-form-urlencoded' --data 'IMAGE_TAG=${IMAGE_TAG}' 'http://ec2-65-2-187-142.ap-south-1.compute.amazonaws.com:8080/job/Reddit-Clone-CD/buildWithParameters?token=gitops-token'"
+                }
+            }
+        }
+        */
     }
-    // post {
-    //     always {
-    //         emailext attachLog: true,
-    //             subject: "'${currentBuild.result}'",
-    //             body: "Project: ${env.JOB_NAME}<br/>" +
-    //                 "Build Number: ${env.BUILD_NUMBER}<br/>" +
-    //                 "URL: ${env.BUILD_URL}<br/>",
-    //             to: 'ashfaque.s510@gmail.com',
-    //             attachmentsPattern: 'trivyfs.txt,trivyimage.txt'
-    //     }
-    // }
+    // Uncomment the post block for notifications
+    /*
+    post {
+        always {
+            emailext attachLog: true,
+                subject: "'${currentBuild.result}'",
+                body: "Project: ${env.JOB_NAME}<br/>" +
+                    "Build Number: ${env.BUILD_NUMBER}<br/>" +
+                    "URL: ${env.BUILD_URL}<br/>",
+                to: 'ashfaque.s510@gmail.com',
+                attachmentsPattern: 'trivyfs.txt,trivyimage.txt'
+        }
+    }
+    */
 }
