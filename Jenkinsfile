@@ -72,19 +72,20 @@ pipeline {
                  }
              }
          }
-
-        
         
     }
-    // post {
-    //     always {
-    //         emailext attachLog: true,
-    //             subject: "'${currentBuild.result}'",
-    //             body: "Project: ${env.JOB_NAME}<br/>" +
-    //                 "Build Number: ${env.BUILD_NUMBER}<br/>" +
-    //                 "URL: ${env.BUILD_URL}<br/>",
-    //             to: 'your-email@example.com',
-    //             attachmentsPattern: 'trivyfs.txt,trivyimage.txt'
-    //     }
-    // }
+    post {
+        always {
+            emailext attachLog: true,
+                subject: "'${currentBuild.result}'",
+                body: "Project: ${env.JOB_NAME}<br/>" +
+                    "Build Number: ${env.BUILD_NUMBER}<br/>" +
+                    "URL: ${env.BUILD_URL}<br/>",
+                to: 'akkaouih17@example.com',
+                attachmentsPattern: 'trivyfs.txt,trivyimage.txt'
+        }
+    }
 }
+
+
+// lakq qdnh niqs uhyx google 
