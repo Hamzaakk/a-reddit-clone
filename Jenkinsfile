@@ -16,6 +16,7 @@ pipeline {
         IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
         JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64'
         PATH = "${JAVA_HOME}/bin:${PATH}"
+        JENKINS_API_TOKEN = credentials("JENKINS_API_TOKEN")
         
     }
     stages {
@@ -107,3 +108,5 @@ pipeline {
 
 // lakq qdnh niqs uhyx google 
 //    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+
+
