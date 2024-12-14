@@ -32,8 +32,13 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                  withSonarQubeEnv('SonarQube-Server') {
-                    sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Redit-Clone-CI \
-                    -Dsonar.projectKey=Redit-Clone-CI'''
+                   sh """
+                    sonar-scanner \
+                      -Dsonar.projectKey=Redit-Clone-CI \
+                      -Dsonar.sources=. \
+                      -Dsonar.host.url=http://54.221.2.11:9000 \
+                      -Dsonar.token=sqp_dff50b61668588a4888770c37bac8535424ad12c
+                    """
                 }
             }
         }
