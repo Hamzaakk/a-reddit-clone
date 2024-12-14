@@ -5,13 +5,13 @@ pipeline {
         nodejs 'node16'
     }
     environment {
-        JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64'
-        PATH = "${JAVA_HOME}/bin:${PATH}"
+        // JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64'
+        // PATH = "${JAVA_HOME}/bin:${PATH}"
         SCANNER_HOME = tool 'sonar-scanner'
         APP_NAME = "reddit-clone-pipeline"
         RELEASE = "1.0.0"
-        DOCKER_USER = "your-dockerhub-username"
-        DOCKER_PASS = 'your-dockerhub-password'
+        DOCKER_USER = "hamzaakkaoui"
+        DOCKER_PASS = 'dockerhub'
         IMAGE_NAME = "${DOCKER_USER}/${APP_NAME}"
         IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
     }
