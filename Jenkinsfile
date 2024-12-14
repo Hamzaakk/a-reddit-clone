@@ -1,8 +1,9 @@
 pipeline {
     agent any
     tools {
-        jdk 'jdk17'  // Replace with your actual JDK if needed
+        jdk 'jdk11'  // Ensure this matches your JDK version
         nodejs 'node16'
+        sonar-scanner 'sonar-scanner' 
     }
     environment {
         // JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64'
@@ -14,6 +15,9 @@ pipeline {
         DOCKER_PASS = 'dockerhub'
         IMAGE_NAME = "${DOCKER_USER}/${APP_NAME}"
         IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
+        JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64'
+        PATH = "${JAVA_HOME}/bin:${PATH}"
+        
     }
     stages {
         stage('Clean Workspace') {
