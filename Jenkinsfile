@@ -1,12 +1,15 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'openjdk:17' // Use an appropriate Docker image
+            args '-v /var/jenkins/agents:/var/jenkins/agents'
+        }
+    }
     tools {
-        jdk 'jdk17'  // Ensure this matches your JDK version
+        jdk 'jdk17'
         nodejs 'node16' 
     }
     environment {
-        // JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64'
-        // PATH = "${JAVA_HOME}/bin:${PATH}"
         SCANNER_HOME = tool 'sonar-scanner'
         APP_NAME = "reddit-clone-pipeline"
         RELEASE = "1.0.0"
@@ -16,7 +19,6 @@ pipeline {
         IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
         JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64'
         PATH = "${JAVA_HOME}/bin:${PATH}"
-        
     }
     stages {
         stage('Clean Workspace') {
@@ -55,12 +57,11 @@ pipeline {
             }
         }
         // Optional Docker stages
-        /*
         stage('Build & Push Docker Image') {
             steps {
                 script {
                     docker.withRegistry('', DOCKER_PASS) {
-                        docker_image = docker.build "${IMAGE_NAME}"
+                        docker_image = docker.build "${IMAGE_NAME}:${IMAGE_TAG}"
                     }
                     docker.withRegistry('', DOCKER_PASS) {
                         docker_image.push("${IMAGE_TAG}")
@@ -69,17 +70,5 @@ pipeline {
                 }
             }
         }
-        */
     }
-    // post {
-    //     always {
-    //         emailext attachLog: true,
-    //             subject: "'${currentBuild.result}'",
-    //             body: "Project: ${env.JOB_NAME}<br/>" +
-    //                 "Build Number: ${env.BUILD_NUMBER}<br/>" +
-    //                 "URL: ${env.BUILD_URL}<br/>",
-    //             to: 'your-email@example.com',
-    //             attachmentsPattern: 'trivyfs.txt,trivyimage.txt'
-    //     }
-    // }
 }
